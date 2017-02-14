@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 
@@ -12,8 +12,15 @@ stores = [
 
 @app.route('/')  # http://xxx/
 def home():
-    return "Hello, World!"
+    ##return "Hello, World!"
+    return render_template("index.html")
 
+
+@app.route('/reset', methods=["POST"])
+def reset():
+    global stores
+    stores = []
+    return jsonify(stores)
 
 # TEST:
 # curl -H "Content-Type: application/json" -d '{"name": "a new store"}' -X POST http://127.0.0.1:5000/store

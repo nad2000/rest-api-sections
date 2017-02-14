@@ -1,0 +1,171 @@
+{
+	"variables": [],
+	"info": {
+		"name": "TEST",
+		"_postman_id": "d8c4c9f7-3eb8-7e35-7da9-0dab7e6183c4",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/reset",
+			"request": {
+				"url": "http://127.0.0.1:5000/reset",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/store",
+			"request": {
+				"url": "http://127.0.0.1:5000/store",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"XXX\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/store",
+			"request": {
+				"url": "http://127.0.0.1:5000/store",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"TEST\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/store",
+			"request": {
+				"url": "http://127.0.0.1:5000/store",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"XXX\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/store/NAME",
+			"request": {
+				"url": "http://127.0.0.1:5000/store/TEST",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"XXX\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/store/NAME/item (ITEM #1)",
+			"request": {
+				"url": "http://127.0.0.1:5000/store/TEST/item",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"ITEM\", \"price\": 12.34}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/store/NAME/item (ITEM #2)",
+			"request": {
+				"url": "http://127.0.0.1:5000/store/TEST/item",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"ITEM #2\", \"price\": 98.76}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "/store/TEST",
+			"request": {
+				"url": "http://127.0.0.1:5000/store/TEST",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"XXX\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
