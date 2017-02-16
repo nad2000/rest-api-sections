@@ -7,17 +7,20 @@ api = Api(app)
 
 items = []
 
+def find_item(name):
+    return next(filter(lambda i: i.get("name") == name, items), None)
+
 class Item(Resource):
 
     def get(self, name):
-        for i in items:
-            if i.get("name") == name:
-                return i
-        else:
-            return {"error": "Item '%s' not found" % name}, 404
+        item = find_item(name)
+        return {"item": item}, 200 if item else 404
 
     def post(self, name):
-        item = {"name": name, "price": 12.99}
+        if find_item(name):
+            return {"message": "the item with the name '%s' already exists." % name}, 400
+        data = request.get_json(force=True, silent=True)
+        item = dict(name=name, price=data.get("price"))
         items.append(item)
         return item, 201
 
