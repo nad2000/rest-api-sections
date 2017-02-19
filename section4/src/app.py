@@ -22,6 +22,7 @@ class Item(Resource):
         item = find_item(name)
         return {"item": item}, 200 if item else 404
 
+    @jwt_required()
     def post(self, name):
         if find_item(name):
             return {"message": "the item with the name '%s' already exists." % name}, 400
@@ -30,7 +31,14 @@ class Item(Resource):
         items.append(item)
         return item, 201
 
+    @jwt_required()
+    def delete(self, name):
+        global items
+        items = list(filter(lambda i: i.get("name") != name, items))
+        return {"message": "Item '%s' deleted." % name}
+
 class ItemList(Resource):
+    @jwt_required()
     def get(self):
         return {"items": items}
 
