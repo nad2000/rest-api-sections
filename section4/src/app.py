@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required
 
 from security import authenticate, identity
@@ -17,6 +17,13 @@ def find_item(name):
 
 class Item(Resource):
 
+    parser = reqparse.RequestParser()
+    parser.add_argument("price",
+            type=float,
+            required=True,
+            help="This field cannot be left blank! It should be float."
+    )
+
     @jwt_required()
     def get(self, name):
         item = find_item(name)
@@ -26,10 +33,21 @@ class Item(Resource):
     def post(self, name):
         if find_item(name):
             return {"message": "the item with the name '%s' already exists." % name}, 400
-        data = request.get_json(force=True, silent=True)
+        data = self.parser.parse_args()
         item = dict(name=name, price=data.get("price"))
         items.append(item)
         return item, 201
+
+    @jwt_required()
+    def put(self, name):
+        item = find_item(name)
+        data = self.parser.parse_args()
+        if item is None:
+            item = dict(name=name, price=data.get("price"))
+            items.append(item)
+        else:
+            item.update(data)
+        return item
 
     @jwt_required()
     def delete(self, name):
