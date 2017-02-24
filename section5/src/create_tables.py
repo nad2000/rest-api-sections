@@ -6,7 +6,7 @@ cursor = connection.cursor()
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
-        username text, 
+        username text UNIQUE,
         password text)
 """)
 connection.commit()
@@ -14,7 +14,7 @@ connection.commit()
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS items (
         id INTEGER PRIMARY KEY,
-        name TEXT, 
+        name TEXT UNIQUE, 
         price FLOAT)
 """)
 connection.commit()
