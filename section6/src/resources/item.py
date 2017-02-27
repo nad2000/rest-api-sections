@@ -14,31 +14,32 @@ class Item(Resource):
     )
 
 
-    def find_by_name(self, name):
-        return ItemModel.find_by_name(name)
-
     def insert_or_update(self, name):
         data = self.parser.parse_args()
-        return {"item": ItemModel.upsert(name, data["price"])}
+        item = ItemModel(name, data["price"])
+        item.upsert()
+        return item
 
     @jwt_required()
     def get(self, name):
 
-        row = ItemModel.find_by_name(name)
-        if row:
-            return {"item": row}
+        item = ItemModel.find_by_name(name)
+        if item:
+            return {"item": item.to_dict()}
         return {"message": "Item '%s' not found." % name}, 404
 
     @jwt_required()
     def post(self, name):
-        if self.find_by_name(name):
+
+        item = ItemModel.find_by_name(name)
+        if item:
             return {"message": "the item with the name '%s' already exists." % name}, 400
         try:
             item = self.insert_or_update(name)
         except Exception as e:
             return {"message": "Error occured: %s" % e}, 500
         else:
-            return item, 201
+            return {"item": item.to_dict()}, 201
 
     @jwt_required()
     def put(self, name):
@@ -47,11 +48,11 @@ class Item(Resource):
         except Exception as e:
             return {"message": "Error occured: %s" % e}, 500
         else:
-            return item
+            return {"item": item.to_dict()}
 
     @jwt_required()
     def delete(self, name):
-        ItemModel.delete(name)
+        ItemModel(name=name).delete()
         return {"message": "Item '%s' deleted." % name}
 
 class ItemList(Resource):

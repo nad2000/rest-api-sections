@@ -1,9 +1,5 @@
 import sqlite3
 
-def dict_factory(cursor, row):
-    return {col[0]: row[idx] for (idx, col) in enumerate(cursor.description)}
-
-
 __conn = None
 
 def make_conn():
@@ -11,7 +7,6 @@ def make_conn():
     def opendb():
         global __conn
         __conn = sqlite3.connect("data.db")
-        __conn.row_factory = dict_factory
     if __conn is None:
         opendb()
     else:
@@ -24,27 +19,32 @@ def make_conn():
 
 class Item:
 
+    def __init__(self, name, price=None):
+        self.name = name
+        self.price = price
+
+    def to_dict(self):
+        return dict(name=self.name, price=self.price)
+
     @classmethod
     def find_by_name(cls, name):
         conn = make_conn()
-        res = make_conn().execute("SELECT * FROM items WHERE name=? LIMIT 1", (name,))
+        res = make_conn().execute("SELECT name, price FROM items WHERE name=? LIMIT 1", (name,))
         row = res.fetchone()
         conn.close()
-        return row
+        if row:
+            return cls(*row)
 
-    @classmethod
-    def upsert(cls, name, price):
+    def upsert(self):
         conn = make_conn()
         conn.execute(
-                "INSERT OR REPLACE INTO items (name, price) VALUES (?, ?)", (name, price))
+                "INSERT OR REPLACE INTO items (name, price) VALUES (?, ?)", (self.name, self.price))
         conn.commit()
         conn.close()
-        return cls.find_by_name(name)
 
-    @classmethod
-    def delete(self, name):
+    def delete(self):
         conn = make_conn()
-        conn.execute("DELETE FROM items WHERE name=?", (name,))
+        conn.execute("DELETE FROM items WHERE name=?", (self.name,))
         conn.commit()
         conn.close()
 
