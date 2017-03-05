@@ -1,21 +1,19 @@
 from db import db
 
-class Item(db.Model):
+class Store(db.Model):
 
-    __tablename__ = "items"
+    __tablename__ = "stores"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
-    price = db.Column(db.Float(precision=2))
-    store_id = db.Column(db.Integer, db.ForeignKey("stores.id"))
 
-    def __init__(self, name, price=None, store_id=None):
+    items = db.relationship("Item", lazy="dynamic")
+
+    def __init__(self, name):
         self.name = name
-        self.price = price
-        self.store_id = store_id
 
     def to_dict(self):
-        return dict(name=self.name, price=self.price)
+        return dict(id=self.id, name=self.name, items=[i.to_dict() for i in self.items.all()])
 
     @classmethod
     def find_by_name(cls, name):

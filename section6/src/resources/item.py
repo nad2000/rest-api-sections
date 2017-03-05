@@ -1,10 +1,9 @@
 from flask_restful import Resource, reqparse
 from security import authenticate, identity
 from flask_jwt import jwt_required
-from models.item import Item as ItemModel
-from models.item import ItemList as ItemListModel
+from models.item import Item
 
-class Item(Resource):
+class ItemResource(Resource):
 
     parser = reqparse.RequestParser()
     parser.add_argument("price",
@@ -12,18 +11,23 @@ class Item(Resource):
             required=True,
             help="This field cannot be left blank! It should be float."
     )
-
+    parser.add_argument("store_id",
+            type=int,
+            required=True,
+            help="The store_id field cannot be left blank! It should be int."
+    )
 
     def insert_or_update(self, name):
         data = self.parser.parse_args()
-        item = ItemModel(name, data["price"])
-        item.upsert()
+        store_id = data.get("store_id")
+        item = Item(name, data["price"], store_id)
+        item.save()
         return item
 
     @jwt_required()
     def get(self, name):
 
-        item = ItemModel.find_by_name(name)
+        item = Item.find_by_name(name)
         if item:
             return {"item": item.to_dict()}
         return {"message": "Item '%s' not found." % name}, 404
@@ -31,13 +35,13 @@ class Item(Resource):
     @jwt_required()
     def post(self, name):
 
-        item = ItemModel.find_by_name(name)
-        if item:
-            return {"message": "the item with the name '%s' already exists." % name}, 400
         try:
+            item = Item.find_by_name(name)
+            if item:
+                return {"message": "the item with the name '%s' already exists." % name}, 400
             item = self.insert_or_update(name)
-        except Exception as e:
-            return {"message": "Error occured: %s" % e}, 500
+        except Exception as ex:
+            return {"message": "Error occured: %s" % ex}, 500
         else:
             return {"item": item.to_dict()}, 201
 
@@ -52,11 +56,14 @@ class Item(Resource):
 
     @jwt_required()
     def delete(self, name):
-        ItemModel(name=name).delete()
+        item = Item.find_by_name(name)
+        if item:
+            item.delete()
+
         return {"message": "Item '%s' deleted." % name}
 
-class ItemList(Resource):
+class ItemListResource(Resource):
     @jwt_required()
     def get(self):
-        return {"items": ItemListModel.get_items()}
+        return {"items": [i.to_dict() for i in Item.get_items()]}
 

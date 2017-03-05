@@ -17,12 +17,12 @@ class UserRegister(Resource):
 
     def post(self):
         data = self.parser.parse_args()
-        username, password = data["username"], data["password"]
+        username = data["username"]
 
-        if User.find_user(username):
+        if User.find_by_username(username):
             return {"message": "User '%s' already exists." % username}, 400
 
-        User.insert_user(username, password)
+        User(**data).save()
 
         return {"message": "User '%s' created successfully." % username}, 201
 
