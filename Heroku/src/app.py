@@ -1,7 +1,9 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_restful import Api
 from flask_jwt import JWT
 import sqlite3
+
+from pyinfo import info
 
 from security import authenticate, identity
 from resources.user import UserRegister
@@ -39,6 +41,10 @@ def cleandb():
     conn.commit()
     conn.close()
     return "OK"
+
+@app.route('/pyinfo')
+def pyinfo():
+    return render_template('pyinfo.html', **info)
 
 if __name__ == "__main__":
     from db import db
