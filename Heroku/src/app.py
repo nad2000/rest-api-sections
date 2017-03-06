@@ -22,10 +22,6 @@ app.secret_key = "%*R)(FJ)W$J)$JR)J)WU$"
 
 api = Api(app)
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
 jwt = JWT(app, authenticate, identity) ## creates a new endpoint /auth
 
 api.add_resource(ItemResource, "/item/<string:name>")
