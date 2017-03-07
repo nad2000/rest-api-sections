@@ -5,7 +5,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from flask import Flask, render_template
 from flask_restful import Api
 from flask_jwt import JWT
-import sqlite3
 
 from pyinfo import info
 
@@ -30,17 +29,6 @@ api.add_resource(UserRegister, "/register")
 api.add_resource(StoreResource, "/store/<string:name>")
 api.add_resource(StoreListResource, "/stores")
 
-@app.route("/cleandb")
-def cleandb():
-    conn = sqlite3.connect("data.db")
-    conn.executescript("""
-        DELETE FROM users;
-        DELETE FROM items;
-        DELETE FROM stores;
-        """)
-    conn.commit()
-    conn.close()
-    return "OK"
 
 @app.route('/pyinfo')
 def pyinfo():
@@ -48,5 +36,6 @@ def pyinfo():
 
 if __name__ == "__main__":
     from db import db
+    from views import *
     db.init_app(app)
     app.run(port=5000, debug=True)
